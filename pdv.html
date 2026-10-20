@@ -4,7 +4,290 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDV Fácil Pro - Frente de Caixa</title>
-  <link rel="stylesheet" href="assets/css/pdv-facil-pro.css">
+  <style>
+    /* ==========================================================================
+       PDV FÁCIL PRO - FRENTE DE CAIXA (CHECKOUT)
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-app: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #0f172a;
+      --bg-sidebar-hover: #1e293b;
+      --border-color: #cbd5e1;
+
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --warning: #d97706;
+      --danger: #b91c1c;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-white: #ffffff;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .app-container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px;
+      background-color: var(--bg-sidebar);
+      color: var(--text-white);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      padding: 18px 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--bg-sidebar-hover);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      background-color: var(--primary);
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+    }
+
+    .nav-item a:hover, .nav-item.active a {
+      background-color: var(--bg-sidebar-hover);
+      color: var(--text-white);
+    }
+
+    .nav-item.active a {
+      border-left: 3px solid var(--primary);
+    }
+
+    .system-status {
+      padding: 12px 16px;
+      border-top: 1px solid var(--bg-sidebar-hover);
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* CONTEÚDO PRINCIPAL DO PDV */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 56px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .pdv-grid-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    @media (max-width: 900px) {
+      .pdv-grid-layout { grid-template-columns: 1fr; }
+    }
+
+    /* PAINEL DE PRODUTOS */
+    .products-panel {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      outline: none;
+      background: white;
+    }
+
+    .produtos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .produto-card-pdv {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .produto-card-pdv:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* PAINEL DACOMANDA / CARRINHO */
+    .cart-panel {
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .cart-header {
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-items-list {
+      flex: 1;
+      overflow-y: auto;
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cart-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .cart-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .total-val {
+      color: var(--success);
+    }
+
+    .payment-select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--success);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 4px 6px -1px rgba(21, 128, 61, 0.2);
+    }
+
+    .btn-checkout:hover {
+      background-color: #166534;
+    }
+
+    .shortcuts-bar {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 4px;
+    }
+  </style>
 </head>
 <body>
 
@@ -17,12 +300,12 @@
           <span class="brand-badge">PRO</span>
         </div>
         <ul class="nav-menu">
-          <li class="nav-item"><a href="index.html"><span class="nav-text">Painel Inicial</span></a></li>
-          <li class="nav-item active"><a href="pdv.html"><span class="nav-text">Frente de Caixa</span></a></li>
-          <li class="nav-item"><a href="pedidos.html"><span class="nav-text">Pedidos</span></a></li>
-          <li class="nav-item"><a href="produtos.html"><span class="nav-text">Produtos</span></a></li>
-          <li class="nav-item"><a href="caixa.html"><span class="nav-text">Caixa</span></a></li>
-          <li class="nav-item"><a href="relatorios.html"><span class="nav-text">Relatórios</span></a></li>
+          <li class="nav-item"><a href="index.html">Painel Inicial</a></li>
+          <li class="nav-item active"><a href="pdv.html">Frente de Caixa</a></li>
+          <li class="nav-item"><a href="pedidos.html">Pedidos</a></li>
+          <li class="nav-item"><a href="produtos.html">Produtos</a></li>
+          <li class="nav-item"><a href="caixa.html">Caixa</a></li>
+          <li class="nav-item"><a href="relatorios.html">Relatórios</a></li>
         </ul>
       </div>
       <div class="system-status">
@@ -32,94 +315,59 @@
 
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
-      <!-- CABEÇALHO SUPERIOR -->
       <header class="topbar">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <span class="status-badge open">&bull; CAIXA ABERTO</span>
+          <span style="background: var(--success-bg); color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">&bull; CAIXA ABERTO</span>
           <span style="font-size: 0.85rem; color: var(--text-muted);">Operador: <strong>Jefferson Nobre</strong></span>
         </div>
-        <div style="font-size: 0.8rem; color: var(--text-muted);">
-          Atalhos: <strong>F2</strong> Busca | <strong>F4</strong> Finalizar | <strong>ESC</strong> Limpar
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          Atalhos: [F2] Finalizar | [ESC] Limpar Comanda
         </div>
       </header>
 
-      <!-- ÁREA DE TRABALHO DO PDV -->
-      <div class="pos-workspace">
+      <div class="pdv-grid-layout">
         
-        <!-- CATÁLOGO DE PRODUTOS -->
-        <section class="catalog-section">
-          <div class="search-bar">
-            <input type="text" id="input-busca" class="search-input" placeholder="Digite o nome do produto ou código de barras (F2)..." autofocus>
-          </div>
-
-          <div class="category-tabs">
-            <button class="tab-btn active">Todos os Itens</button>
-            <button class="tab-btn">Frangos & Assados</button>
-            <button class="tab-btn">Acompanhamentos</button>
-            <button class="tab-btn">Bebidas</button>
-          </div>
-
-          <div class="products-grid" id="grid-produtos">
-            <!-- Cards Renderizados Via JS -->
-            <div class="product-card" onclick="adicionarItem('Frango Assado Inteiro', 38.00)">
-              <div class="product-title">Frango Assado Inteiro</div>
-              <div class="product-price">R$ 38,00</div>
-            </div>
-            <div class="product-card" onclick="adicionarItem('Maionese Caseira 500g', 18.00)">
-              <div class="product-title">Maionese Caseira 500g</div>
-              <div class="product-price">R$ 18,00</div>
-            </div>
-            <div class="product-card" onclick="adicionarItem('Guaraná Antarctica 2L', 10.00)">
-              <div class="product-title">Guaraná Antarctica 2L</div>
-              <div class="product-price">R$ 10,00</div>
-            </div>
-            <div class="product-card" onclick="adicionarItem('Farofa Especial 300g', 8.00)">
-              <div class="product-title">Farofa Especial 300g</div>
-              <div class="product-price">R$ 8,00</div>
-            </div>
+        <!-- PAINEL ESQUERDO: PRODUTOS CADASTRADOS -->
+        <section class="products-panel">
+          <input type="text" id="input-busca" class="search-box" placeholder="Pesquisar produto no cardápio..." onkeyup="filtrarProdutos()">
+          
+          <div class="produtos-grid" id="grid-produtos">
+            <!-- Os produtos do BancoLocal (app.js) serão injetados dinamicamente aqui -->
           </div>
         </section>
 
-        <!-- CARRINHO / TOTALIZADOR -->
-        <section class="checkout-section">
-          <div class="cart-header">
-            <strong>Venda Atual (#00482)</strong>
-            <button onclick="limparCarrinho()" style="border:none; background:none; color:var(--danger); cursor:pointer; font-size:0.8rem;">Limpar (ESC)</button>
+        <!-- PAINEL DIREITO: COMANDA / CARRINHO DE VENDA -->
+        <section class="cart-panel">
+          <div>
+            <div class="cart-header">
+              <span>Comanda Atual</span>
+              <button onclick="limparComanda()" style="background: none; border: none; color: var(--danger); font-size: 0.8rem; font-weight: bold; cursor: pointer;">Limpar [ESC]</button>
+            </div>
+            
+            <div class="cart-items-list" id="lista-carrinho">
+              <div style="color: var(--text-muted); text-align: center; margin-top: 40px; font-size: 0.9rem;">
+                Nenhum item adicionado.<br>Clique nos produtos ao lado para iniciar a venda.
+              </div>
+            </div>
           </div>
 
-          <div class="cart-table-wrapper">
-            <table class="cart-table">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th style="width: 50px;">Qtd</th>
-                  <th style="text-align: right;">Total</th>
-                  <th style="width: 30px;"></th>
-                </tr>
-              </thead>
-              <tbody id="cart-tbody">
-                <!-- Itens inseridos dinamicamente -->
-              </tbody>
-            </table>
-          </div>
-
-          <div class="checkout-summary">
-            <div class="summary-row">
-              <span>Subtotal</span>
-              <strong id="summary-subtotal">R$ 0,00</strong>
-            </div>
-            <div class="summary-row">
-              <span>Desconto</span>
-              <span id="summary-discount">R$ 0,00</span>
-            </div>
-            <div class="summary-row total">
-              <span>TOTAL</span>
-              <span class="total-amount" id="summary-total">R$ 0,00</span>
+          <div class="cart-footer">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Forma de Pagamento:</label>
+              <select id="forma-pagamento" class="payment-select">
+                <option value="dinheiro">Dinheiro (Entra no Caixa)</option>
+                <option value="pix">PIX</option>
+                <option value="cartao">Cartão Débito / Crédito</option>
+              </select>
             </div>
 
-            <button class="btn-checkout" onclick="abrirModalPagamento()">
-              FINALIZAR VENDA (F4)
-            </button>
+            <div class="total-row">
+              <span>Total a Pagar:</span>
+              <span class="total-val" id="span-total">R$ 0,00</span>
+            </div>
+
+            <button class="btn-checkout" onclick="finalizarVenda()">Finalizar Venda [F2]</button>
+            <span class="shortcuts-bar">Pressione F2 para concluir rapidamente</span>
           </div>
         </section>
 
@@ -127,154 +375,141 @@
     </main>
   </div>
 
-  <!-- MODAL DE PAGAMENTO -->
-  <div class="modal-overlay" id="modal-pagamento">
-    <div class="modal-card">
-      <h3>Forma de Pagamento</h3>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top:4px;">Selecione como o cliente deseja pagar:</p>
-
-      <div class="payment-methods">
-        <button class="payment-btn selected" onclick="selecionarForma(this)">PIX (QR Code)</button>
-        <button class="payment-btn" onclick="selecionarForma(this)">Cartão de Débito</button>
-        <button class="payment-btn" onclick="selecionarForma(this)">Cartão de Crédito</button>
-        <button class="payment-btn" onclick="selecionarForma(this)">Dinheiro</button>
-      </div>
-
-      <div style="margin-top: 16px; display: flex; gap: 10px;">
-        <button onclick="fecharModalPagamento()" style="flex:1; padding: 12px; border:1px solid var(--border-color); background:white; border-radius:var(--radius-md); cursor:pointer;">Voltar</button>
-        <button onclick="confirmarVenda()" style="flex:1; padding: 12px; background:var(--success); color:white; border:none; border-radius:var(--radius-md); font-weight:bold; cursor:pointer;">Confirmar (Enter)</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LÓGICA JAVASCRIPT VANILLA -->
+  <!-- SCRIPT DE INTERAÇÃO DO PDV -->
   <script>
-    let carrinho = [];
+    let comanda = [];
 
-    function adicionarItem(nome, preco) {
-      const itemExistente = carrinho.find(item => item.nome === nome);
-      if (itemExistente) {
-        itemExistente.qtd += 1;
-      } else {
-        carrinho.push({ nome, preco, qtd: 1 });
-      }
-      atualizarCarrinho();
-    }
+    function carregarProdutosPDV() {
+      const container = document.getElementById('grid-produtos');
+      if (!container) return;
 
-    function removerItem(index) {
-      carrinho.splice(index, 1);
-      atualizarCarrinho();
-    }
-
-    function limparCarrinho() {
-      carrinho = [];
-      atualizarCarrinho();
-    }
-
-    function atualizarCarrinho() {
-      const tbody = document.getElementById('cart-tbody');
-      tbody.innerHTML = '';
-      let subtotal = 0;
-
-      carrinho.forEach((item, index) => {
-        const totalItem = item.preco * item.qtd;
-        subtotal += totalItem;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.nome}</td>
-          <td>${item.qtd}x</td>
-          <td style="text-align: right;">R$ ${totalItem.toFixed(2).replace('.', ',')}</td>
-          <td><button class="btn-remove" onclick="removerItem(${index})">&times;</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      document.getElementById('summary-subtotal').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-      document.getElementById('summary-total').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-    }
-
-    function abrirModalPagamento() {
-      if(carrinho.length === 0) {
-        alert('Adicione ao menos um item para finalizar a venda.');
-        return;
-      }
-      document.getElementById('modal-pagamento').style.display = 'flex';
-    }
-
-    function fecharModalPagamento() {
-      document.getElementById('modal-pagamento').style.display = 'none';
-    }
-
-    function selecionarForma(element) {
-      document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('selected'));
-      element.classList.add('selected');
-    }
-
-    function confirmarVenda() {
-      fecharModalPagamento();
-      alert('Venda efetuada com sucesso!');
-      limparCarrinho();
-    }
-
-    // MAPEAMENTO DE ATALHOS TECLADO (F2, F4, ESC)
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'F2') {
-        e.preventDefault();
-        document.getElementById('input-busca').focus();
-      } else if (e.key === 'F4') {
-        e.preventDefault();
-        abrirModalPagamento();
-      } else if (e.key === 'Escape') {
-        fecharModalPagamento();
-      }
-    });
-  </script>
-  <script src="js/app.js"></script>
-  <script>
-    function carregarProdutosNoPDV() {
-      const containerProdutos = document.getElementById('grid-produtos');
-      if (!containerProdutos) {
-        console.warn("Aviso: Elemento com id 'grid-produtos' não encontrado no pdv.html");
-        return;
-      }
-
-      // Puxa do BancoLocal criado no app.js
       const produtos = BancoLocal.getProdutos();
-      containerProdutos.innerHTML = '';
+      container.innerHTML = '';
 
       if (produtos.length === 0) {
-        containerProdutos.innerHTML = '<p style="padding: 20px; color: #64748b;">Nenhum produto cadastrado.</p>';
+        container.innerHTML = '<p style="color:var(--text-muted); grid-column: 1/-1; text-align:center;">Nenhum produto cadastrado.</p>';
         return;
       }
 
       produtos.forEach(prod => {
         const card = document.createElement('div');
-        // Estilo limpo para o card do produto no PDV
-        card.style.cssText = 'background: #ffffff; border: 1px solid #cbd5e1; padding: 16px; border-radius: 8px; cursor: pointer; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.15s ease;';
-        
+        card.className = 'produto-card-pdv';
         card.innerHTML = `
-          <strong style="display: block; font-size: 1rem; color: #0f172a; margin-bottom: 8px;">${prod.nome}</strong>
-          <span style="color: #15803d; font-weight: 800; font-size: 1.1rem;">R$ ${prod.preco.toFixed(2).replace('.', ',')}</span>
-          <span style="display: block; font-size: 0.75rem; color: #64748b; margin-top: 4px; text-transform: uppercase;">${prod.categoria || 'Geral'}</span>
+          <strong style="font-size: 0.95rem; margin-bottom: 8px;">${prod.nome}</strong>
+          <span style="color: var(--success); font-weight: 800; font-size: 1.05rem;">R$ ${prod.preco.toFixed(2).replace('.', ',')}</span>
         `;
-        
-        // Efeito visual ao passar o rato
-        card.onmouseover = () => card.style.borderColor = '#2563eb';
-        card.onmouseout = () => card.style.borderColor = '#cbd5e1';
-
-        // Ação ao clicar no produto no PDV
-        card.onclick = function() {
-          alert(`Item selecionado para venda: ${prod.nome} - R$ ${prod.preco.toFixed(2)}`);
-        };
-
-        containerProdutos.appendChild(card);
+        card.onclick = () => adicionarAoCarrinho(prod);
+        container.appendChild(card);
       });
     }
 
-    // Executa assim que a página carregar
-    document.addEventListener('DOMContentLoaded', carregarProdutosNoPDV);
+    function adicionarAoCarrinho(produto) {
+      const itemExistente = comanda.find(item => item.id === produto.id);
+      if (itemExistente) {
+        itemExistente.qtd += 1;
+      } else {
+        comanda.push({ id: produto.id, nome: produto.nome, preco: produto.preco, qtd: 1 });
+      }
+      atualizarCarrinhoVisual();
+    }
+
+    function alterarQtd(id, delta) {
+      const item = comanda.find(i => i.id === id);
+      if (item) {
+        item.qtd += delta;
+        if (item.qtd <= 0) {
+          comanda = comanda.filter(i => i.id !== id);
+        }
+      }
+      atualizarCarrinhoVisual();
+    }
+
+    function atualizarCarrinhoVisual() {
+      const lista = document.getElementById('lista-carrinho');
+      const spanTotal = document.getElementById('span-total');
+      if (!lista || !spanTotal) return;
+
+      if (comanda.length === 0) {
+        lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; margin-top: 40px; font-size: 0.9rem;">Nenhum item adicionado.<br>Clique nos produtos ao lado para iniciar a venda.</div>';
+        spanTotal.innerText = 'R$ 0,00';
+        return;
+      }
+
+      lista.innerHTML = '';
+      let totalGeral = 0;
+
+      comanda.forEach(item => {
+        const subtotal = item.preco * item.qtd;
+        totalGeral += subtotal;
+
+        const row = document.createElement('div');
+        row.className = 'cart-item-row';
+        row.innerHTML = `
+          <div style="flex: 1;">
+            <strong>${item.nome}</strong><br>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">R$ ${item.preco.toFixed(2).replace('.', ',')} un</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button onclick="alterarQtd(${item.id}, -1)" style="padding: 2px 8px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">-</button>
+            <span style="font-weight: 700; min-width: 20px; text-align: center;">${item.qtd}</span>
+            <button onclick="alterarQtd(${item.id}, 1)" style="padding: 2px 8px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">+</button>
+          </div>
+        `;
+        lista.appendChild(row);
+      });
+
+      spanTotal.innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+    }
+
+    function limparComanda() {
+      comanda = [];
+      atualizarCarrinhoVisual();
+    }
+
+    function finalizarVenda() {
+      if (comanda.length === 0) {
+        alert("A comanda está vazia! Adicione produtos antes de finalizar.");
+        return;
+      }
+
+      const totalGeral = comanda.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
+      const formaPagamento = document.getElementById('forma-pagamento').value;
+      const nomeCliente = prompt("Nome do cliente (opcional):") || "Consumidor Final";
+
+      // Salva no banco local centralizado (app.js)
+      const pedidoCriado = BancoLocal.salvarVenda(comanda, totalGeral, formaPagamento, nomeCliente);
+
+      alert(`Venda ${pedidoCriado.id} concluída com sucesso!\nO pedido foi enviado para a cozinha e registado no caixa.`);
+      
+      limparComanda();
+      
+      // Opcional: redireciona para a tela de pedidos para validação imediata
+      window.location.href = 'pedidos.html';
+    }
+
+    function filtrarProdutos() {
+      const termo = document.getElementById('input-busca').value.toLowerCase();
+      const cards = document.querySelectorAll('.produto-card-pdv');
+      cards.forEach(card => {
+        const nome = card.querySelector('strong').innerText.toLowerCase();
+        card.style.display = nome.includes(termo) ? 'flex' : 'none';
+      });
+    }
+
+    // Atalhos de Teclado Profissionais (F2 e ESC)
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'F2') {
+        event.preventDefault();
+        finalizarVenda();
+      } else if (event.key === 'Escape') {
+        limparComanda();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', carregarProdutosPDV);
   </script>
+
+  <!-- MOTOR CENTRAL DE DADOS -->
   <script src="js/app.js"></script>
 </body>
 </html>
