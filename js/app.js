@@ -1,1 +1,20 @@
 
+// Exemplo de função para integrar no pdv.html ao finalizar a venda
+function finalizarVendaReal() {
+  // Exemplo de itens fictícios na comanda atual (você pode adaptar para pegar os itens da tela)
+  const itensVenda = [
+    { nome: 'Frango Assado Inteiro', qtd: 1, preco: 38.00 },
+    { nome: 'Guaraná Antarctica 2L', qtd: 1, preco: 10.00 }
+  ];
+  const valorTotal = 48.00;
+  const formaPagamento = 'dinheiro'; // ou 'pix', 'cartao'
+  const nomeCliente = prompt("Nome do cliente (opcional):") || "Consumidor Final";
+
+  // Salva usando o nosso gestor central
+  const pedidoCriado = BancoLocal.salvarVenda(itensVenda, valorTotal, formaPagamento, nomeCliente);
+
+  alert(`Venda ${pedidoCriado.id} finalizada com sucesso! O pedido foi enviado para a cozinha.`);
+  
+  // Opcional: redirecionar para a tela de pedidos para acompanhar
+  window.location.href = 'pedidos.html';
+}
