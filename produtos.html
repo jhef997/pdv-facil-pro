@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDV Fácil Pro - Gestão de Produtos</title>
+  <style>
+    /* ==========================================================================
+       PDV FÁCIL PRO - GESTÃO DE PRODUTOS E ESTOQUE
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-app: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #0f172a;
+      --bg-sidebar-hover: #1e293b;
+      --border-color: #cbd5e1;
+
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-white: #ffffff;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .app-container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px;
+      background-color: var(--bg-sidebar);
+      color: var(--text-white);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      padding: 18px 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      border-bottom: 1px solid var(--bg-sidebar-hover);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      background-color: var(--primary);
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+    }
+
+    .nav-item a:hover, .nav-item.active a {
+      background-color: var(--bg-sidebar-hover);
+      color: var(--text-white);
+    }
+
+    .nav-item.active a {
+      border-left: 3px solid var(--primary);
+    }
+
+    .system-status {
+      padding: 12px 16px;
+      border-top: 1px solid var(--bg-sidebar-hover);
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .topbar {
+      height: 56px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-badge.open {
+      background-color: var(--success-bg);
+      color: var(--success);
+    }
+
+    .products-container {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--text-white);
+      padding: 10px 18px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* BARRA DE FILTROS E PESQUISA */
+    .filter-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-input-prod {
+      flex: 1;
+      min-width: 240px;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-input-prod:focus {
+      border-color: var(--primary);
+    }
+
+    .select-category {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      background-color: white;
+      outline: none;
+    }
+
+    /* TABELA DE PRODUTOS */
+    .products-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .products-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .products-table th {
+      background-color: #f8fafc;
+      padding: 12px 16px;
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .products-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .products-table tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .badge-stock {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-stock.ok { background-color: var(--success-bg); color: var(--success); }
+    .badge-stock.low { background-color: var(--warning-bg); color: var(--warning); }
+    .badge-stock.out { background-color: var(--danger-bg); color: var(--danger); }
+
+    .btn-action-icon {
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .btn-action-icon:hover {
+      background-color: var(--bg-app);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* MODAL DE CADASTRO */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      width: 480px;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .modal-header {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group.full {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-group input, .form-group select {
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <span>PDV FÁCIL</span>
+          <span class="brand-badge">PRO</span>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html"><span class="nav-text">Painel Inicial</span></a></li>
+          <li class="nav-item"><a href="pdv.html"><span class="nav-text">Frente de Caixa</span></a></li>
+          <li class="nav-item"><a href="#"><span class="nav-text">Pedidos</span></a></li>
+          <li class="nav-item active"><a href="produtos.html"><span class="nav-text">Produtos</span></a></li>
+          <li class="nav-item"><a href="caixa.html"><span class="nav-text">Caixa</span></a></li>
+          <li class="nav-item"><a href="#"><span class="nav-text">Relatórios</span></a></li>
+        </ul>
+      </div>
+      <div class="system-status">
+        Caixa #01 &bull; v1.2.0
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="status-badge open">&bull; CAIXA ABERTO</span>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Operador: <strong>Jefferson Nobre</strong></span>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          Catálogo Atual: <strong>12 Itens Ativos</strong>
+        </div>
+      </header>
+
+      <div class="products-container">
+        
+        <div class="header-actions">
+          <div>
+            <h2>Cadastro e Estoque de Produtos</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Gerencie o cardápio, preços e quantidades em estoque.</p>
+          </div>
+          <button class="btn-primary" onclick="abrirModalProduto()">+ Novo Produto</button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filter-bar">
+          <input type="text" id="input-pesquisa" class="search-input-prod" placeholder="Buscar por nome ou código..." onkeyup="filtrarTabela()">
+          <select id="select-cat" class="select-category" onchange="filtrarTabela()">
+            <option value="">Todas as Categorias</option>
+            <option value="Frangos & Assados">Frangos & Assados</option>
+            <option value="Acompanhamentos">Acompanhamentos</option>
+            <option value="Bebidas">Bebidas</option>
+          </select>
+        </div>
+
+        <!-- TABELA DE PRODUTOS -->
+        <div class="products-card">
+          <table class="products-table" id="tabela-produtos">
+            <thead>
+              <tr>
+                <th>Cód.</th>
+                <th>Nome do Produto</th>
+                <th>Categoria</th>
+                <th>Unidade</th>
+                <th style="text-align: right;">Preço Venda</th>
+                <th style="text-align: center;">Estoque</th>
+                <th style="text-align: right;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-produtos">
+              <tr>
+                <td><strong>#101</strong></td>
+                <td>Frango Assado Inteiro</td>
+                <td>Frangos & Assados</td>
+                <td>Unidade (Un)</td>
+                <td style="text-align: right; font-weight: 700;">R$ 38,00</td>
+                <td style="text-align: center;"><span class="badge-stock ok">25 un</span></td>
+                <td style="text-align: right;"><button class="btn-action-icon" onclick="editarProduto('Frango Assado Inteiro', 38.00)">Editar</button></td>
+              </tr>
+              <tr>
+                <td><strong>#102</strong></td>
+                <td>Maionese Caseira 500g</td>
+                <td>Acompanhamentos</td>
+                <td>Unidade (Un)</td>
+                <td style="text-align: right; font-weight: 700;">R$ 18,00</td>
+                <td style="text-align: center;"><span class="badge-stock ok">18 un</span></td>
+                <td style="text-align: right;"><button class="btn-action-icon" onclick="editarProduto('Maionese Caseira 500g', 18.00)">Editar</button></td>
+              </tr>
+              <tr>
+                <td><strong>#103</strong></td>
+                <td>Guaraná Antarctica 2L</td>
+                <td>Bebidas</td>
+                <td>Unidade (Un)</td>
+                <td style="text-align: right; font-weight: 700;">R$ 10,00</td>
+                <td style="text-align: center;"><span class="badge-stock low">5 un</span></td>
+                <td style="text-align: right;"><button class="btn-action-icon" onclick="editarProduto('Guaraná Antarctica 2L', 10.00)">Editar</button></td>
+              </tr>
+              <tr>
+                <td><strong>#104</strong></td>
+                <td>Farofa Especial 300g</td>
+                <td>Acompanhamentos</td>
+                <td>Unidade (Un)</td>
+                <td style="text-align: right; font-weight: 700;">R$ 8,00</td>
+                <td style="text-align: center;"><span class="badge-stock ok">30 un</span></td>
+                <td style="text-align: right;"><button class="btn-action-icon" onclick="editarProduto('Farofa Especial 300g', 8.00)">Editar</button></td>
+              </tr>
+              <tr>
+                <td><strong>#105</strong></td>
+                <td>Salpicão Especial (Kg)</td>
+                <td>Acompanhamentos</td>
+                <td>Peso (Kg)</td>
+                <td style="text-align: right; font-weight: 700;">R$ 45,00</td>
+                <td style="text-align: center;"><span class="badge-stock ok">12,5 kg</span></td>
+                <td style="text-align: right;"><button class="btn-action-icon" onclick="editarProduto('Salpicão Especial (Kg)', 45.00)">Editar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL DE PRODUTO -->
+  <div class="modal-overlay" id="modal-produto">
+    <div class="modal-card">
+      <div class="modal-header" id="modal-titulo">Cadastrar Novo Produto</div>
+
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Nome do Produto</label>
+          <input type="text" id="p-nome" placeholder="Ex: Frango Assado com Batatas">
+        </div>
+
+        <div class="form-group">
+          <label>Categoria</label>
+          <select id="p-cat">
+            <option value="Frangos & Assados">Frangos & Assados</option>
+            <option value="Acompanhamentos">Acompanhamentos</option>
+            <option value="Bebidas">Bebidas</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de Venda</label>
+          <select id="p-tipo">
+            <option value="Un">Unidade (Un)</option>
+            <option value="Kg">Peso (Kg)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Preço de Venda (R$)</label>
+          <input type="number" step="0.01" id="p-preco" placeholder="0,00">
+        </div>
+
+        <div class="form-group">
+          <label>Estoque Inicial</label>
+          <input type="number" id="p-estoque" placeholder="0">
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button onclick="fecharModalProduto()" style="flex:1; padding: 10px; border:1px solid var(--border-color); background:white; border-radius:var(--radius-md); cursor:pointer;">Cancelar</button>
+        <button onclick="salvarProduto()" style="flex:1; padding: 10px; background:var(--primary); color:white; border:none; border-radius:var(--radius-md); font-weight:bold; cursor:pointer;">Salvar Produto</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function abrirModalProduto() {
+      document.getElementById('modal-titulo').innerText = 'Cadastrar Novo Produto';
+      document.getElementById('p-nome').value = '';
+      document.getElementById('p-preco').value = '';
+      document.getElementById('p-estoque').value = '';
+      document.getElementById('modal-produto').style.display = 'flex';
+    }
+
+    function fecharModalProduto() {
+      document.getElementById('modal-produto').style.display = 'none';
+    }
+
+    function editarProduto(nome, preco) {
+      document.getElementById('modal-titulo').innerText = 'Editar Produto';
+      document.getElementById('p-nome').value = nome;
+      document.getElementById('p-preco').value = preco;
+      document.getElementById('modal-produto').style.display = 'flex';
+    }
+
+    function salvarProduto() {
+      const nome = document.getElementById('p-nome').value;
+      const preco = parseFloat(document.getElementById('p-preco').value);
+      const cat = document.getElementById('p-cat').value;
+      const tipo = document.getElementById('p-tipo').value;
+      const est = document.getElementById('p-estoque').value || '10';
+
+      if (!nome || isNaN(preco)) {
+        alert('Por favor, preencha o nome e o preço do produto.');
+        return;
+      }
+
+      const tbody = document.getElementById('tbody-produtos');
+      const tr = document.createElement('tr');
+      const novoId = Math.floor(Math.random() * 800) + 100;
+
+      tr.innerHTML = `
+        <td><strong>#${novoId}</strong></td>
+        <td>${nome}</td>
+        <td>${cat}</td>
+        <td>${tipo === 'Kg' ? 'Peso (Kg)' : 'Unidade (Un)'}</td>
+        <td style="text-align: right; font-weight: 700;">R$ ${preco.toFixed(2).replace('.', ',')}</td>
+        <td style="text-align: center;"><span class="badge-stock ok">${est} ${tipo.toLowerCase()}</span></td>
+        <td style="text-align: right;"><button class="btn-action-icon" onclick="editarProduto('${nome}', ${preco})">Editar</button></td>
+      `;
+
+      tbody.insertBefore(tr, tbody.firstChild);
+      fecharModalProduto();
+      alert('Produto cadastrado com sucesso!');
+    }
+
+    function filtrarTabela() {
+      const busca = document.getElementById('input-pesquisa').value.toLowerCase();
+      const catFiltro = document.getElementById('select-cat').value;
+      const linhas = document.querySelectorAll('#tbody-produtos tr');
+
+      linhas.forEach(linha => {
+        const textoLinha = linha.innerText.toLowerCase();
+        const catLinha = linha.children[2].innerText;
+
+        const bateuBusca = textoLinha.includes(busca);
+        const bateuCat = catFiltro === '' || catLinha === catFiltro;
+
+        if (bateuBusca && bateuCat) {
+          linha.style.display = '';
+        } else {
+          linha.style.display = 'none';
+        }
+      });
+    }
+  </script>
+  <script src="js/app.js"></script>
+  <script>
+    // Função para carregar os produtos cadastrados na tabela
+    function carregarTabelaProdutos() {
+      const tbody = document.querySelector('tbody'); // Certifique-se de que a tabela tem <tbody>
+      if (!tbody) return;
+
+      const produtos = BancoLocal.getProdutos();
+      tbody.innerHTML = '';
+
+      produtos.forEach(prod => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${prod.nome}</strong></td>
+          <td>${prod.categoria}</td>
+          <td style="text-align: right;">R$ ${prod.preco.toFixed(2).replace('.', ',')}</td>
+          <td style="text-align: center;">
+            <button onclick="removerProduto(${prod.id})" style="background: var(--danger, #b91c1c); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Função para adicionar novo produto
+    function cadastrarNovoProduto(event) {
+      if (event) event.preventDefault();
+      
+      const nome = prompt("Nome do novo produto (ex: Meio Frango):");
+      if (!nome) return;
+      
+      const precoStr = prompt("Preço do produto (ex: 22.00):");
+      const preco = parseFloat(precoStr.replace(',', '.'));
+      
+      if (isNaN(preco)) {
+        alert("Preço inválido!");
+        return;
+      }
+
+      const produtos = BancoLocal.getProdutos();
+      const novoId = produtos.length > 0 ? produtos[produtos.length - 1].id + 1 : 1;
+
+      produtos.push({ id: novoId, nome: nome, preco: preco, categoria: 'geral' });
+      localStorage.setItem('pdv_produtos', JSON.stringify(produtos));
+
+      alert("Produto cadastrado com sucesso!");
+      carregarTabelaProdutos();
+    }
+
+    // Executa ao carregar a página
+    document.addEventListener('DOMContentLoaded', carregarTabelaProdutos);
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

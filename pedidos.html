@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDV Fácil Pro - Gestão de Pedidos</title>
+  <style>
+    /* ==========================================================================
+       PDV FÁCIL PRO - GESTÃO DE PEDIDOS E ENCOMENDAS
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-app: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #0f172a;
+      --bg-sidebar-hover: #1e293b;
+      --border-color: #cbd5e1;
+
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-white: #ffffff;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .app-container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px;
+      background-color: var(--bg-sidebar);
+      color: var(--text-white);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      padding: 18px 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      border-bottom: 1px solid var(--bg-sidebar-hover);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      background-color: var(--primary);
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+    }
+
+    .nav-item a:hover, .nav-item.active a {
+      background-color: var(--bg-sidebar-hover);
+      color: var(--text-white);
+    }
+
+    .nav-item.active a {
+      border-left: 3px solid var(--primary);
+    }
+
+    .system-status {
+      padding: 12px 16px;
+      border-top: 1px solid var(--bg-sidebar-hover);
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .topbar {
+      height: 56px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-badge.open {
+      background-color: var(--success-bg);
+      color: var(--success);
+    }
+
+    .pedidos-container {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ABAS DE FILTRO */
+    .tabs-row {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-item {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+
+    .tab-item.active {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* CARDS DE PEDIDOS */
+    .pedidos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .pedido-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pedido-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .pedido-id {
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .badge-status {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-status.preparando { background-color: var(--warning-bg); color: var(--warning); }
+    .badge-status.pronto { background-color: var(--primary-light); color: var(--primary); }
+    .badge-status.concluido { background-color: var(--success-bg); color: var(--success); }
+
+    .pedido-cliente {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .pedido-itens {
+      list-style: none;
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background-color: #f8fafc;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .pedido-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .pedido-total {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .btn-status-next {
+      padding: 8px 14px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-status-next.concluir {
+      background-color: var(--success);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- MENU LATERAL INTERLIGADO -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <span>PDV FÁCIL</span>
+          <span class="brand-badge">PRO</span>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html"><span class="nav-text">Painel Inicial</span></a></li>
+          <li class="nav-item"><a href="pdv.html"><span class="nav-text">Frente de Caixa</span></a></li>
+          <li class="nav-item active"><a href="pedidos.html"><span class="nav-text">Pedidos</span></a></li>
+          <li class="nav-item"><a href="produtos.html"><span class="nav-text">Produtos</span></a></li>
+          <li class="nav-item"><a href="caixa.html"><span class="nav-text">Caixa</span></a></li>
+          <li class="nav-item"><a href="relatorios.html"><span class="nav-text">Relatórios</span></a></li>
+        </ul>
+      </div>
+      <div class="system-status">
+        Caixa #01 &bull; v1.2.0
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="status-badge open">&bull; CAIXA ABERTO</span>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Operador: <strong>Jefferson Nobre</strong></span>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);" id="header-status-text">
+          Fila de Produção Ativa
+        </div>
+      </header>
+
+      <div class="pedidos-container">
+        
+        <div>
+          <h2>Acompanhamento de Pedidos e Encomendas</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Gerencie o estado do preparo, retiradas no balcão e entregas.</p>
+        </div>
+
+        <!-- ABAS DE FILTRO COM CONTADORES AUTOMÁTICOS -->
+        <div class="tabs-row">
+          <button class="tab-item active" onclick="filtrarAbas('todos', this)">Todos</button>
+          <button class="tab-item" onclick="filtrarAbas('preparando', this)">Em Preparação</button>
+          <button class="tab-item" onclick="filtrarAbas('pronto', this)">Pronto para Retirada</button>
+          <button class="tab-item" onclick="filtrarAbas('concluido', this)">Concluídos</button>
+        </div>
+
+        <!-- CARDS DE PEDIDOS -->
+        <div class="pedidos-grid" id="grid-pedidos">
+          
+          <!-- PEDIDO 1 -->
+          <div class="pedido-card" data-status="preparando">
+            <div class="pedido-header">
+              <span class="pedido-id">#00483</span>
+              <span class="badge-status preparando">Em Preparação</span>
+            </div>
+            <div class="pedido-cliente">
+              <strong>Retirada Balcão</strong> &bull; Previsto: 12:50<br>
+              Cliente: Carlos Oliveira
+            </div>
+            <ul class="pedido-itens">
+              <li>1x Frango Assado Inteiro</li>
+              <li>1x Farofa Especial 300g</li>
+            </ul>
+            <div class="pedido-footer">
+              <span class="pedido-total">R$ 46,00</span>
+              <button class="btn-status-next" onclick="avancarStatus(this, 'pronto')">Marcar Pronto &rarr;</button>
+            </div>
+          </div>
+
+          <!-- PEDIDO 2 -->
+          <div class="pedido-card" data-status="preparando">
+            <div class="pedido-header">
+              <span class="pedido-id">#00484</span>
+              <span class="badge-status preparando">Em Preparação</span>
+            </div>
+            <div class="pedido-cliente">
+              <strong>Encomenda Domingueira</strong> &bull; Previsto: 13:00<br>
+              Cliente: Maria Souza
+            </div>
+            <ul class="pedido-itens">
+              <li>2x Frango Assado Inteiro</li>
+              <li>1x Maionese Caseira 500g</li>
+              <li>1x Guaraná 2L</li>
+            </ul>
+            <div class="pedido-footer">
+              <span class="pedido-total">R$ 104,00</span>
+              <button class="btn-status-next" onclick="avancarStatus(this, 'pronto')">Marcar Pronto &rarr;</button>
+            </div>
+          </div>
+
+          <!-- PEDIDO 3 -->
+          <div class="pedido-card" data-status="pronto">
+            <div class="pedido-header">
+              <span class="pedido-id">#00482</span>
+              <span class="badge-status pronto">Pronto para Retirada</span>
+            </div>
+            <div class="pedido-cliente">
+              <strong>Retirada Balcão</strong> &bull; Aguardando Cliente<br>
+              Cliente: João Paulo
+            </div>
+            <ul class="pedido-itens">
+              <li>1x Frango Assado Inteiro</li>
+              <li>1x Maionese Caseira 500g</li>
+            </ul>
+            <div class="pedido-footer">
+              <span class="pedido-total">R$ 56,00</span>
+              <button class="btn-status-next concluir" onclick="avancarStatus(this, 'concluido')">Entregar & Concluir &#10003;</button>
+            </div>
+          </div>
+
+          <!-- PEDIDO 4 -->
+          <div class="pedido-card" data-status="concluido">
+            <div class="pedido-header">
+              <span class="pedido-id">#00481</span>
+              <span class="badge-status concluido">Concluído</span>
+            </div>
+            <div class="pedido-cliente">
+              <strong>Entregue no Balcão</strong> &bull; 12:35<br>
+              Cliente: Consumidor Final
+            </div>
+            <ul class="pedido-itens">
+              <li>2x Frango Assado, 1x Guaraná 2L</li>
+            </ul>
+            <div class="pedido-footer">
+              <span class="pedido-total">R$ 86,00</span>
+              <span style="font-size:0.75rem; color:var(--success); font-weight:bold;">Finalizado</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function avancarStatus(btn, novoStatus) {
+      const card = btn.closest('.pedido-card');
+      if (!card) return;
+
+      const badge = card.querySelector('.badge-status');
+      const footer = card.querySelector('.pedido-footer');
+      const totalText = card.querySelector('.pedido-total') ? card.querySelector('.pedido-total').innerText : '';
+
+      if (novoStatus === 'pronto') {
+        card.setAttribute('data-status', 'pronto');
+        badge.className = 'badge-status pronto';
+        badge.innerText = 'Pronto para Retirada';
+
+        btn.className = 'btn-status-next concluir';
+        btn.innerHTML = 'Entregar & Concluir &#10003;';
+        btn.onclick = function() { avancarStatus(this, 'concluido'); };
+      } else if (novoStatus === 'concluido') {
+        card.setAttribute('data-status', 'concluido');
+        badge.className = 'badge-status concluido';
+        badge.innerText = 'Concluído';
+
+        footer.innerHTML = `
+          <span class="pedido-total">${totalText}</span>
+          <span style="font-size:0.75rem; color:var(--success); font-weight:bold;">Finalizado</span>
+        `;
+      }
+      atualizarContadores();
+    }
+
+    function filtrarAbas(status, tab) {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const cards = document.querySelectorAll('.pedido-card');
+      cards.forEach(card => {
+        if (status === 'todos' || card.getAttribute('data-status') === status) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function atualizarContadores() {
+      const todos = document.querySelectorAll('.pedido-card').length;
+      const preparando = document.querySelectorAll('.pedido-card[data-status="preparando"]').length;
+      const pronto = document.querySelectorAll('.pedido-card[data-status="pronto"]').length;
+      const concluido = document.querySelectorAll('.pedido-card[data-status="concluido"]').length;
+
+      const tabs = document.querySelectorAll('.tab-item');
+      if (tabs.length >= 4) {
+        tabs[0].innerText = `Todos (${todos})`;
+        tabs[1].innerText = `Em Preparação (${preparando})`;
+        tabs[2].innerText = `Pronto para Retirada (${pronto})`;
+        tabs[3].innerText = `Concluídos (${concluido})`;
+      }
+
+      const headerText = document.getElementById('header-status-text');
+      if (headerText) {
+        headerText.innerHTML = `Fila de Produção: <strong>${preparando + pronto} Pedidos Pendentes</strong>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', atualizarContadores);
+  </script>
+</body>
+</html>
